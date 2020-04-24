@@ -1,0 +1,36 @@
+.adventure {
+  height: 12vmin;
+  pointer-events: none;
+  position: relative;
+}
+@media (prefers-reduced-motion: no-preference) {
+  .adventure {
+    animation: adventure-spin infinite 5s linear;
+  }
+}
+@keyframes adventure-spin {
+  0% {
+    transform: rotate(0deg);
+    left: -20vw;
+  }
+  17% {
+    transform: rotate(15deg);
+  }
+  34% {
+    transform: rotate(0deg);
+  }
+  51% {
+    transform: rotate(-15deg);
+    left: 20vw;
+  }
+  68% {
+    transform: rotate(0deg);
+  }
+  85% {
+    transform: rotate(15deg);
+  }
+  100% {
+    transform: rotate(0deg);
+    left: -20vw;
+  }
+}

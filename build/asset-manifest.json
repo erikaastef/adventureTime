@@ -1,0 +1,16 @@
+{
+  "files": {
+    "main.css": "/static/css/main.b3f9623b.css",
+    "main.js": "/static/js/main.a2c7a0a4.js",
+    "static/media/superlady.png": "/static/media/superlady.2dd7c0edb68c20a9c8fa.png",
+    "static/media/anfibio.png": "/static/media/anfibio.5cba91dedbb31c07ad1e.png",
+    "static/media/nube.png": "/static/media/nube.d9adb2bf9f0063131cac.png",
+    "index.html": "/index.html",
+    "main.b3f9623b.css.map": "/static/css/main.b3f9623b.css.map",
+    "main.a2c7a0a4.js.map": "/static/js/main.a2c7a0a4.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.b3f9623b.css",
+    "static/js/main.a2c7a0a4.js"
+  ]
+}

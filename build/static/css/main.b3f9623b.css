@@ -1,0 +1,2 @@
+.adventure{height:12vmin;pointer-events:none;position:relative}@media (prefers-reduced-motion:no-preference){.adventure{animation:adventure-spin 5s linear infinite}}@keyframes adventure-spin{0%{left:-20vw;transform:rotate(0deg)}17%{transform:rotate(15deg)}34%{transform:rotate(0deg)}51%{left:20vw;transform:rotate(-15deg)}68%{transform:rotate(0deg)}85%{transform:rotate(15deg)}to{left:-20vw;transform:rotate(0deg)}}
+/*# sourceMappingURL=main.b3f9623b.css.map*/

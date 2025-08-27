@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { useHistory } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { nextTurn } from "../../store/actions/index";
 
 import superlady from "./img/superlady.png";
 import anfibio from "./img/anfibio.png";
-import { CircularProgress } from "@material-ui/core";
-import SweetAlert from "react-bootstrap-sweetalert";
+import { CircularProgress } from "@mui/material";
+import Swal from "sweetalert2";
 import {
   Button,
   ButtonContainer,
@@ -31,118 +31,104 @@ import {
 export default () => {
   //NormalHooks
   const dispatch = useDispatch();
-  const history = useHistory();
-  //Redux Data
-  const monsterEffect = useSelector((state) => state.newGame.monsterEffect);
-  const gameData = useSelector((state) => state.newGame.game);
-  //Alerts
-  const [monsterEffectAlert, setMonsterEffectAlert] = useState(false);
-  const [defeatAlert, setDefeatAlert] = useState(false);
-  const [luckilyWinAlert, setLuckilyWinAlert] = useState(false);
-  const [horrorEffectAlert, setHorrorEffectAlert] = useState(false);
+  const navigate = useNavigate();
 
   const [readRules, setReadRulesAlert] = useState(false);
   const [card, setCard] = useState("");
 
-  //Deconstructions
-  const { gameInfo, playerInfo, monsterInfo, playerCards } = gameData;
+  const { playerInfo, monsterInfo, playerCards, gameInfo, monsterEffect } = useSelector((s) => s.game);
 
+  const gameData = gameInfo; 
+  
+
+  useEffect(() => {
+    if (!readRules) {
+      Swal.fire({
+        title: "HERE ARE THE RULES",
+        icon: "warning",
+        html: `
+          You'll be able to choose a single card per turn and your possible choices would be :
+          <ul style="list-style-type: none; text-align: left;">
+            <li>• Make damage to your enemy.</li>
+            <li>• Heal yourself.</li>
+            <li>• Shield yourself.</li>
+          </ul>
+          If your enemy activates the horror effect, you won't be able to select a card for this turn. <br/>
+          And finally, to win the game, you must kill the monster before you run out of turns or health points.
+        `,
+        confirmButtonText: "Good luck!",
+      }).then(() => {
+        setReadRulesAlert(true);
+      });
+    }
+  }, [readRules]);
+  
   useEffect(() => {
     //GameResults Alerts
     if (gameData) {
       monsterInfo.hp === 0 &&
-        setLuckilyWinAlert(
-          <SweetAlert
-            warning
-            title={`IDK how but you${playerInfo.name} just Won... \n Try Another Game and see if you get how luck goes`}
-            onConfirm={() => {
-              history.push("/");
-              dispatch({
-                type: "GAME_DATA",
-                payload: "",
-              });
-            }}
-            confirmBtnText="GET HOME"
-          />
-        );
+      Swal.fire({
+        icon: "warning",
+        title: `IDK how but you ${playerInfo.name} just Won...`,
+        text: "Try Another Game and see how luck goes!",
+        confirmButtonText: "GET HOME"
+      }).then((result) => {
+        if (result.isConfirmed) {
+          navigate("/");
+          dispatch({
+            type: "GAME_DATA",
+            payload: "",
+          });
+        }
+      });
+
       gameInfo.currentTurn >= 20 &&
-        setDefeatAlert(
-          <SweetAlert
-            warning
-            title={`${monsterInfo.name} has Won... \n Try Another Game`}
-            onConfirm={() => {
-              history.push("/");
-              dispatch({
-                type: "GAME_DATA",
-                payload: "",
-              });
-            }}
-            confirmBtnText="GET HOME"
-          />
-        );
-    }
+      Swal.fire({
+        icon: "warning",
+        title: `${monsterInfo.name} has Won... \n Try Another Game`,
+        confirmButtonText: "GET HOME"
+      }).then((result) => {
+        if (result.isConfirmed) {
+          navigate("/");
+          dispatch({
+            type: "GAME_DATA",
+            payload: "",
+          });
+        }
+      });
     // Monster effect Alert
     monsterEffect.effect &&
-      setMonsterEffectAlert(
-        <SweetAlert
-          warning
-          title={`${monsterInfo.name} has used ${monsterEffect.effect}!`}
-          onConfirm={() => {
-            dispatch({ type: "MONSTER_EFFECT", payload: "" });
-            setMonsterEffectAlert(false);
-          }}
-          confirmBtnText="Play Your Next Card!"
-        >
-          <span>{"VALUE:" + monsterEffect.value}</span>
-        </SweetAlert>
-      );
+    Swal.fire({
+      icon: "warning",
+      title: `${monsterInfo.name} has used ${monsterEffect.effect}!`,
+      html: "VALUE:" + monsterEffect.value,
+      confirmBtnText:"Play Your Next Card!"
+    }).then((result) => {
+      if (result.isConfirmed) {
+        dispatch({ type: "MONSTER_EFFECT", payload: "" });
+      }
+    });
+    
     //  Horror effect alert
     monsterEffect.effect === "HORROR" &&
-      setHorrorEffectAlert(
-        <SweetAlert
-          warning
-          title={`YOU LOSE A TURN IN HORROR OF THE SITUATIOON!`}
-          onConfirm={() => {
-            dispatch(nextTurn(null, monsterInfo.gameId));
-            setHorrorEffectAlert(false);
-          }}
-          confirmBtnText="Go to next turn!"
-        ></SweetAlert>
-      );
+    Swal.fire({
+      icon: "warning",
+      title:`YOU LOSE A TURN IN HORROR OF THE SITUATIOON!`,
+       confirmBtnText:"Go to next turn!"
+    }).then((result) => {
+      if (result.isConfirmed) {
+        dispatch(nextTurn(null, monsterInfo.gameId));
+      }
+    });
+    }
+  
 
-    console.log(monsterEffect);
   }, [monsterEffect]);
   //
 
   return (
     <div>
-      {/*Alerts*/}
-      {!readRules && (
-        <SweetAlert
-          warning
-          title={`HERE ARE THE RULES`}
-          onConfirm={() => {
-            setReadRulesAlert(true);
-          }}
-          confirmBtnText="Good luck!"
-        >
-          You'll be able to choose a single card per turn and your possible
-          choices would be :
-          <ul style={{ listStyleType: "none" }}>
-            <li>Make damage to your enemy.</li>
-            <li>Heal yourself.</li>
-            <li>Shield yourself.</li>
-          </ul>
-          If your enemy activates the horror effect,you won't be able to select
-          a card for this turn. <br />
-          And finally, to win the game, you must kill the monster before you run
-          out of turns or health points.
-        </SweetAlert>
-      )}
-      {monsterEffectAlert}
-      {defeatAlert}
-      {luckilyWinAlert}
-      {horrorEffectAlert}
+     
       {gameData ? (
         <Container>
           <Board>

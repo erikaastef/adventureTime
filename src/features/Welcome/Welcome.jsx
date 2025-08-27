@@ -1,13 +1,13 @@
 import React, { useState } from "react";
 import { NewGame } from "../../store/actions/index"
-import { dispatch, useDispatch, useSelector } from "react-redux"
+import {  useDispatch } from "react-redux"
 import { Link } from "react-router-dom";
 
 import nube from "./img/nube.png";
 import "./animaciones.css";
 import { Button, Title, Container, Label, Input, Form } from "./styles";
 
-export default function Welcome({ handleSubmit, handleChange }) {
+export default function Welcome() {
   const [inputValue, setInputValue] = useState("")
 
   const dispatch = useDispatch()

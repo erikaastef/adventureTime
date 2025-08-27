@@ -1,5 +1,5 @@
-import newGame from "./newGame"
+import game from "./newGame"
 
 export {
-  newGame
+  game
 }
